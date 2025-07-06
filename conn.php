@@ -4,9 +4,11 @@ $username = "bloodadmin@blooddbserver";
 $password = "Admin123";
 $database = "blood_donation";
 
+// SSL bağlantısı için mysqli_init kullanılır
 $conn = mysqli_init();
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 
+// Bağlantıyı kur
 mysqli_real_connect(
     $conn,
     $server,
@@ -18,6 +20,7 @@ mysqli_real_connect(
     MYSQLI_CLIENT_SSL
 );
 
+// Hata kontrolü
 if (mysqli_connect_errno($conn)) {
     die("❌ Connection failed: " . mysqli_connect_error());
 }
