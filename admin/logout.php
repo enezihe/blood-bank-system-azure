@@ -1,6 +1,13 @@
 <?php
 session_start();
-unset($_SESSION['login']);
+
+// Unset all session variables
+$_SESSION = array();
+
+// Destroy the session
 session_destroy();
-header("location:login.php"); 
+
+// Redirect to login page
+header("Location: login.php");
+exit;
 ?>
