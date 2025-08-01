@@ -13,7 +13,8 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -34,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: php-app
-          path: .  # Root level, where index.php is now located
+          path: .  # Root directory including index.php
 
   deploy:
     runs-on: ubuntu-latest
@@ -53,5 +54,5 @@ jobs:
         with:
           app-name: 'bloodbank-webapp'
           slot-name: 'Production'
-          package: .
+          package: ./
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C00E2C55DC954C008A4305D7A0693818 }}
