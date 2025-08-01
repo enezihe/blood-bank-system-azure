@@ -1,8 +1,4 @@
-Harika! Aşağıda **ikonları kaldırılmış sade bir `README.md`** versiyonu yer alıyor:
 
----
-
-````markdown
 # Blood Bank System on Azure (Terraform Deployment)
 
 This project is a proof of concept (PoC) for deploying a cloud-native Blood Bank Management System using Terraform on Microsoft Azure. The infrastructure includes a web application and MySQL database, provisioned using Infrastructure as Code.
