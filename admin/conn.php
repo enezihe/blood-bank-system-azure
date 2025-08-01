@@ -1,27 +1,13 @@
 <?php
-$server = "blooddbserver.mysql.database.azure.com";
-$username = "bloodadmin@blooddbserver";
-$password = "Admin123";
-$database = "blood_donation";
+$server = "localhost";
+$username = "root";
+$password = "";
+$database = "blood_bank_database"; // phpMyAdmin'de oluşturduğun veritabanı adı
 
-// SSL bağlantısı için mysqli_init kullanılır
-$conn = mysqli_init();
-mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
-
-// Bağlantıyı kur
-mysqli_real_connect(
-    $conn,
-    $server,
-    $username,
-    $password,
-    $database,
-    3306,
-    NULL,
-    MYSQLI_CLIENT_SSL
-);
+$conn = mysqli_connect($server, $username, $password, $database);
 
 // Hata kontrolü
-if (mysqli_connect_errno($conn)) {
-    die("❌ Connection failed: " . mysqli_connect_error());
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
 ?>
