@@ -36,6 +36,7 @@ User → Azure Linux Web App (PHP) → Azure MySQL Flexible Server → Data Stor
 2. Authenticate to Azure:
    ```bash
    az login
+   
 ````
 
 3. Initialize Terraform:
