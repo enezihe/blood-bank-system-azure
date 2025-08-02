@@ -10,12 +10,17 @@ if (!$server || !$username || !$password || !$database) {
     die("Database environment variables are not set correctly.");
 }
 
+// SSL sertifikasının doğru yolu
+$ssl_ca = '/home/site/wwwroot/admin/DigiCertGlobalRootCA.crt.pem';
+
 // Initialize a secure connection with SSL
 $conn = mysqli_init();
-mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+
+// SSL bağlantısını ayarla
+mysqli_ssl_set($conn, NULL, NULL, $ssl_ca, NULL, NULL);
 
 // Establish connection with the provided connection details
-mysqli_real_connect(
+if (!mysqli_real_connect(
     $conn,
     $server,
     $username,
@@ -24,10 +29,8 @@ mysqli_real_connect(
     3306, // MySQL default port
     NULL,
     MYSQLI_CLIENT_SSL
-);
-
-// Connection error handling
-if (mysqli_connect_errno($conn)) {
+)) {
+    // Connection error handling
     die("Connection failed: " . mysqli_connect_error());
 }
 ?>
