@@ -1,4 +1,9 @@
 <?php
+// Hata raporlamayı etkinleştir
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Read database configuration from environment variables
 $server = getenv("DB_HOST");
 $username = getenv("DB_USER");
