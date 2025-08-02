@@ -5,7 +5,7 @@ mysqli_real_connect(
     $conn,
     'blooddbserver-67528.mysql.database.azure.com',
     'bloodadmin@blooddbserver-67528',
-    'Admin123',
+    'Merhaba123!',
     'blood_donation',
     3306,
     NULL,
