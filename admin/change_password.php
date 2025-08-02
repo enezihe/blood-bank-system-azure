@@ -1,4 +1,5 @@
-<?php include 'session.php'; ?>
+<?php global $conn;
+include 'session.php'; ?>
 
 <html>
 
@@ -99,7 +100,7 @@ include 'sidebar.php'; ?>
 
 if(isset($_POST["submit"])){
   $username=$_SESSION['username'];
-  $password=mysqli_real_escape_string($conn,$_POST["currpassword"]);
+    $password=mysqli_real_escape_string($conn,$_POST["currpassword"]);
   $sql="select * from admin_info where admin_username='$username'";
   $result=mysqli_query($conn,$sql) or die("query failed.");
   if(mysqli_num_rows($result)>0)
