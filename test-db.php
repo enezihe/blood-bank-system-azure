@@ -12,12 +12,9 @@ $ssl_ca = '/home/site/wwwroot/DigiCertGlobalRootCA.crt.pem';
 $conn = mysqli_init();
 
 // SSL bağlantısını ayarla
-// Yolu, sertifika dosyasını yüklediğiniz dizine göre değiştirin
 mysqli_ssl_set($conn, NULL, NULL, $ssl_ca, NULL, NULL);
 
 // Veritabanına bağlan
-// Bağlantı başarılı olursa, $conn nesnesi geçerli bir bağlantı olacaktır.
-// Aksi takdirde, mysqli_real_connect() false döner.
 if (!mysqli_real_connect($conn, $server, $username, $password, $database, 3306, NULL, MYSQLI_CLIENT_SSL)) {
     // Bağlantı hatası durumunda hata mesajını göster ve script'i durdur
     die('Connection failed: ' . mysqli_connect_error());
