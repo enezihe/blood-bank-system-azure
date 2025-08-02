@@ -5,8 +5,8 @@ $username = getenv("DB_USER");
 $password = getenv("DB_PASS");
 $database = getenv("DB_NAME");
 
-// SSL sertifikasının yolu
-$ssl_ca = '/home/site/wwwroot/DigiCertGlobalRootCA.crt.pem';
+// SSL sertifikasının doğru yolu
+$ssl_ca = '/home/site/wwwroot/admin/DigiCertGlobalRootCA.crt.pem';
 
 // Bağlantıyı başlat
 $conn = mysqli_init();
