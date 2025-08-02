@@ -1,24 +1,25 @@
 <?php
-// SSL Sertifikası yolu
-// Azure App Service için bu dizin kullanılabilir.
-$ssl_ca = '/home/site/wwwroot/DigiCertGlobalRootCA.crt.pem';
+// Ortam değişkenlerini oku
+$server = getenv("DB_HOST");
+$username = getenv("DB_USER");
+$password = getenv("DB_PASS");
+$database = getenv("DB_NAME");
 
-// Veritabanı bağlantı bilgileri
-$server = 'blooddbserver-67528.mysql.database.azure.com';
-$username = 'bloodadmin@blooddbserver-67528';
-$password = 'NewPassword2025!'; // App Service'teki DB_PASS ile aynı olmalı
-$database = 'blood_donation';
-$port = 3306;
+// SSL sertifikasının yolu
+$ssl_ca = '/home/site/wwwroot/DigiCertGlobalRootCA.crt.pem';
 
 // Bağlantıyı başlat
 $conn = mysqli_init();
 
 // SSL bağlantısını ayarla
+// Yolu, sertifika dosyasını yüklediğiniz dizine göre değiştirin
 mysqli_ssl_set($conn, NULL, NULL, $ssl_ca, NULL, NULL);
 
 // Veritabanına bağlan
-if (!mysqli_real_connect($conn, $server, $username, $password, $database, $port, NULL, MYSQLI_CLIENT_SSL)) {
-    // Bağlantı hatası oluşursa
+// Bağlantı başarılı olursa, $conn nesnesi geçerli bir bağlantı olacaktır.
+// Aksi takdirde, mysqli_real_connect() false döner.
+if (!mysqli_real_connect($conn, $server, $username, $password, $database, 3306, NULL, MYSQLI_CLIENT_SSL)) {
+    // Bağlantı hatası durumunda hata mesajını göster ve script'i durdur
     die('Connection failed: ' . mysqli_connect_error());
 } else {
     // Başarılı olursa
