@@ -1,26 +1,32 @@
 <?php
-$server = "blooddbserver.mysql.database.azure.com";
-$username = "bloodadmin@blooddbserver";
-$password = "Admin123";
-$database = "blood_donation";
+// Read database configuration from environment variables
+$server = getenv("DB_HOST");
+$username = getenv("DB_USER");
+$password = getenv("DB_PASS");
+$database = getenv("DB_NAME");
+
+// Ensure environment variables are set
+if (!$server || !$username || !$password || !$database) {
+    die("Database environment variables are not set correctly.");
+}
 
 // Initialize a secure connection with SSL
 $conn = mysqli_init();
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 
-// Establish the connection
+// Establish connection with the provided connection details
 mysqli_real_connect(
     $conn,
     $server,
     $username,
     $password,
     $database,
-    3306,
+    3306, // MySQL default port
     NULL,
     MYSQLI_CLIENT_SSL
 );
 
-// Handle connection errors
+// Connection error handling
 if (mysqli_connect_errno($conn)) {
     die("Connection failed: " . mysqli_connect_error());
 }
