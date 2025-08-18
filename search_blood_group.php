@@ -1,37 +1,58 @@
 <?php
+// search_blood_group.php — secure, DRY, and XSS-safe version
 
-$bg=$_POST['blood'];
-$conn=mysqli_connect("localhost","root","","blood_donation") or die("Connection error");
-$sql= "select * from donor_details where donor_blood='{$bg}' order by rand() limit 5";
-$result=mysqli_query($conn,$sql) or die("query unsuccessful.");
-  if(mysqli_num_rows($result)>0)   {
-  while($row = mysqli_fetch_assoc($result)) {
-    ?>
-    <div class="row">
-    <div class="col-lg-4 col-sm-6 portfolio-item" ><br>
-    <div class="card" style="width:300px">
-        <img class="card-img-top" src="image\blood_drop_logo.jpg" alt="Card image" style="width:100%;height:300px">
-        <div class="card-body">
-          <h3 class="card-title"><?php echo $row['donor_name']; ?></h3>
-          <p class="card-text">
-            <b>Blood Group : </b> <b><?php echo $row['blood_group']; ?></b><br>
-            <b>Mobile No. : </b> <?php echo $row['donor_number']; ?><br>
-            <b>Gender : </b><?php echo $row['donor_gender']; ?><br>
-            <b>Age : </b> <?php echo $row['donor_age']; ?><br>
-            <b>Address : </b> <?php echo $row['donor_address']; ?><br>
-          </p>
+require __DIR__ . '/conn.php'; // use shared connection
 
-        </div>
-      </div>
-</div>
+// Normalize and validate input
+$blood = strtoupper(trim($_POST['blood'] ?? ''));
+$ALLOWED = ['A+','A-','B+','B-','AB+','AB-','O+','O-'];
 
-<?php
-  }
+if ($blood === '' || !in_array($blood, $ALLOWED, true)) {
+    echo '<div class="alert alert-danger">Please select a valid blood group.</div>';
+    exit;
 }
-  else
-  {
 
-      echo '<div class="alert alert-danger">No Donor Found For your search Blood group </div>';
+// Query using prepared statements
+$stmt = $conn->prepare("
+    SELECT donor_name, donor_number, donor_gender, donor_age, donor_address, donor_blood
+    FROM donor_details
+    WHERE donor_blood = ?
+    ORDER BY RAND()
+    LIMIT 5
+");
+$stmt->bind_param('s', $blood);
+$stmt->execute();
+$res = $stmt->get_result();
 
-  } ?>
-</div>
+// Render results
+if ($res->num_rows > 0): ?>
+    <div class="row">
+        <?php while ($row = $res->fetch_assoc()):
+            // Escape output to prevent XSS
+            $name    = htmlspecialchars($row['donor_name'],    ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $number  = htmlspecialchars($row['donor_number'],  ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $gender  = htmlspecialchars($row['donor_gender'],  ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $age     = htmlspecialchars((string)$row['donor_age'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $address = htmlspecialchars($row['donor_address'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $bgroup  = htmlspecialchars($row['donor_blood'],   ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            ?>
+            <div class="col-lg-4 col-sm-6 portfolio-item"><br>
+                <div class="card" style="width:300px">
+                    <img class="card-img-top" src="image/blood_drop_logo.jpg" alt="Blood Drop" style="width:100%;height:300px">
+                    <div class="card-body">
+                        <h3 class="card-title"><?= $name ?></h3>
+                        <p class="card-text">
+                            <b>Blood Group:</b> <b><?= $bgroup ?></b><br>
+                            <b>Mobile No.:</b> <?= $number ?><br>
+                            <b>Gender:</b> <?= $gender ?><br>
+                            <b>Age:</b> <?= $age ?><br>
+                            <b>Address:</b> <?= $address ?><br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        <?php endwhile; ?>
+    </div>
+<?php else: ?>
+    <div class="alert alert-danger">No donor found for the selected blood group.</div>
+<?php endif;

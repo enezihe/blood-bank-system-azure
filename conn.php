@@ -1,13 +1,10 @@
 <?php
-$server = "localhost";
-$username = "root";
-$password = "";
-$database = "blood_bank_database"; // phpMyAdmin'de oluşturduğun veritabanı adı
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-$conn = mysqli_connect($server, $username, $password, $database);
+$server   = '127.0.0.1';
+$database = 'blood_donation';
+$username = 'bloodbank';
+$password = 'Strong!Pass123';
 
-// Hata kontrolü
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-?>
+$conn = new mysqli($server, $username, $password, $database);
+$conn->set_charset('utf8mb4');

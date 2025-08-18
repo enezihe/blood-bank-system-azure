@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# PHP/vendor/log
+vendor/
+*.log
+
+# Build artifacts
+app.zip
+
+# Local secrets (keep out of git)
+conn.php
+.env
+
+# Local secrets
+conn.php
