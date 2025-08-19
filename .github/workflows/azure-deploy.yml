@@ -5,29 +5,31 @@ on:
     branches: [ "main", "master" ]
   workflow_dispatch:
 
+env:
+  APP_PATH: .
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Optional: composer support if composer.json exists
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.2"
 
       - name: Install dependencies (if composer.json exists)
+        working-directory: ${{ env.APP_PATH }}
         run: |
           if [ -f composer.json ]; then composer install --no-dev --prefer-dist; fi
 
-      # Package the app (exclude VCS and workflow files)
-      - name: Archive project
+      - name: Archive project (zip root = app root)
         run: |
-          zip -r app.zip . \
-            -x ".git/*" \
-               ".github/*"
+          cd "$APP_PATH"
+          zip -r ../app.zip . -x "**/.git/*" "**/.github/*"
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v3
