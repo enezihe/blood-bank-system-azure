@@ -1,3 +1,4 @@
+# .github/workflows/azure-deploy.yml
 name: Deploy PHP app to Azure Web App
 
 on:
@@ -26,10 +27,11 @@ jobs:
         run: |
           if [ -f composer.json ]; then composer install --no-dev --prefer-dist; fi
 
-      - name: Archive project (zip root = app root)
+      # Put files into app.zip WITHOUT adding a top-level folder
+      - name: Archive project (flat)
         run: |
-          cd "$APP_PATH"
-          zip -r ../app.zip . -x "**/.git/*" "**/.github/*"
+          cd "${{ env.APP_PATH }}"
+          zip -r ../app.zip * -x "**/.git/*" "**/.github/*"
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v3
