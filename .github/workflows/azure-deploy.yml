@@ -25,17 +25,17 @@ jobs:
         run: |
           if [ -f composer.json ]; then composer install --no-dev --prefer-dist; fi
 
-      # ZIP'i her zaman workspace köküne üret
       - name: Archive project (flat)
         working-directory: ${{ env.APP_PATH }}
         run: |
           zip -r "$GITHUB_WORKSPACE/app.zip" . \
             -x '**/.git/*' '**/.github/*'
 
-      - name: Sanity check
+      - name: Sanity check package
         run: |
-          ls -lah "$GITHUB_WORKSPACE"
-          unzip -l "$GITHUB_WORKSPACE/app.zip" | sed -n '1,40p'
+          unzip -l "$GITHUB_WORKSPACE/app.zip" | sed -n '1,120p'
+          unzip -l "$GITHUB_WORKSPACE/app.zip" | grep -E '(^|/)index\.php$'
+          unzip -l "$GITHUB_WORKSPACE/app.zip" | grep -E '(^|/)admin/(login|donor_list)\.php$'
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v3
