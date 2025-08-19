@@ -25,17 +25,22 @@ jobs:
         run: |
           if [ -f composer.json ]; then composer install --no-dev --prefer-dist; fi
 
-      - name: Archive project (flat)
+      - name: Archive project (exclude VCS and local secrets)
         working-directory: ${{ env.APP_PATH }}
         run: |
           zip -r "$GITHUB_WORKSPACE/app.zip" . \
-            -x '**/.git/*' '**/.github/*'
+            -x ".git/*" ".github/*" ".idea/*" "conn.local.php"
 
-      - name: Sanity check package
+      - name: Sanity check package (must contain app entrypoints)
         run: |
-          unzip -l "$GITHUB_WORKSPACE/app.zip" | sed -n '1,120p'
-          unzip -l "$GITHUB_WORKSPACE/app.zip" | grep -E '(^|/)index\.php$'
-          unzip -l "$GITHUB_WORKSPACE/app.zip" | grep -E '(^|/)admin/(login|donor_list)\.php$'
+          unzip -l "$GITHUB_WORKSPACE/app.zip" | awk '{print $4}' | sed '/^$/d' > filelist.txt
+          for f in "index.php" "health.php" "admin/login.php" "admin/donor_list.php"; do
+            if ! grep -Fxq "$f" filelist.txt; then
+              echo "::error ::Required file missing in ZIP: $f"
+              exit 1
+            fi
+          done
+          echo "Package looks good."
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v3
